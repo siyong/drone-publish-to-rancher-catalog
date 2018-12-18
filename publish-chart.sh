@@ -22,24 +22,56 @@ if [ -z "${CHART_NAME}" ]; then
 fi
 echo "CHART_NAME: ${CHART_NAME}"
 
-mkdir -p .build/charts
-cp -R .chart .build/${CHART_NAME}
+mkdir -p .build/
+
+echo '======'
+echo "${GIT_USER}"
+echo "${GIT_PASSWORD}"
+echo '======'
+echo "${CHART_NAME}"
+echo "${CHART_VERSION}"
+
+git clone https://${GIT_USER}:${GIT_PASSWORD}@bitbucket.org/vaultdragon/charts.git .build/
+
+
+
+ls .build/charts
+
+mkdir -p .build/charts/${CHART_NAME}/${CHART_VERSION}/
+cp -a .chart/. .build/charts/${CHART_NAME}/${CHART_VERSION}/
+## echo ".build/charts/${CHART_NAME}/${CHART_VERSION}/"
+## ls .build/charts/${CHART_NAME}/${CHART_VERSION}/
+
+## sleep 5s
 
 # sed replace version and name
-sed -i -e "s/%VERSION%/${CHART_VERSION}/g" .build/${CHART_NAME}/Chart.yaml
-sed -i -e "s/%CHART_NAME%/${CHART_NAME}/g" .build/${CHART_NAME}/Chart.yaml
+sed -i -e "s/%VERSION%/${CHART_VERSION}/g" .build/charts/${CHART_NAME}/${CHART_VERSION}/Chart.yaml
+sed -i -e "s/%VERSION%/${CHART_VERSION}/g" .build/charts/${CHART_NAME}/${CHART_VERSION}/values.yaml
+sed -i -e "s/%CHART_NAME%/${CHART_NAME}/g" .build/charts/${CHART_NAME}/${CHART_VERSION}/Chart.yaml
 
-export HELM_HOME=/root/.helm
+echo ".build/charts/${CHART_NAME}/${CHART_VERSION}/Chart.yaml"
+cat .build/charts/${CHART_NAME}/${CHART_VERSION}/Chart.yaml
+echo ".build/charts/${CHART_NAME}/${CHART_VERSION}/values.yaml"
+cat .build/charts/${CHART_NAME}/${CHART_VERSION}/values.yaml
+
+cd .build/
+git add .
+git commit -m "publish ${CHART_NAME} ${CHART_VERSION}"
+git push
+
+echo "successfully publish ${CHART_NAME} ${CHART_VERSION}"
+
+## export HELM_HOME=/root/.helm
 
 # Lint Chart
-helm lint .build/${CHART_NAME}
+##helm lint .build/${CHART_NAME}
 
 # Package Chart
-helm package -d .build/charts .build/${CHART_NAME}
+##helm package -d .build/charts .build/${CHART_NAME}
 
 # Add Remote Repo
-helm repo add --username "${HELM_REPO_USERNAME}" --password "${HELM_REPO_PASSWORD}" \
-pipeline-tmp ${HELM_REPO_URL}
+##helm repo add --username "${HELM_REPO_USERNAME}" --password "${HELM_REPO_PASSWORD}" \
+##pipeline-tmp ${HELM_REPO_URL}
 
 # Publish Chart 
-helm push .build/charts/${CHART_NAME}-${CHART_VERSION}.tgz pipeline-tmp
+##helm push .build/charts/${CHART_NAME}-${CHART_VERSION}.tgz pipeline-tmp
