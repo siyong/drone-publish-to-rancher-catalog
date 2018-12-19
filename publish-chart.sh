@@ -31,6 +31,9 @@ echo '======'
 echo "${CHART_NAME}"
 echo "${CHART_VERSION}"
 
+git config --global user.email "engineering@vaultdragon.com"
+git config --global user.name "Dragoneering"
+
 git clone https://${GIT_USER}:${GIT_PASSWORD}@bitbucket.org/vaultdragon/charts.git .build/
 
 
