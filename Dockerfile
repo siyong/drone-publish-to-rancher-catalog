@@ -1,7 +1,4 @@
-FROM alpine
+FROM jgreat/helm-with-plugins
 
-RUN mkdir -p /usr/local/bin/
-ADD ./publish-chart.sh /usr/local/bin/publish-chart.sh
-RUN chmod +x -R /usr/local/bin
-
-CMD [ "/usr/local/bin/publish-chart.sh" ]
+ADD publish-chart.sh /bin/
+CMD [ "/bin/publish-chart.sh" ]
