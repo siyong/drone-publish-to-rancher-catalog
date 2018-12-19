@@ -1,6 +1,6 @@
 FROM alpine
 
-ADD publish-chart.sh /bin/
+ADD publish-chart.sh /usr/local/bin/
 RUN chmod +x -R /usr/local/bin
 
-CMD [ "/bin/publish-chart.sh" ]
+CMD [ "/usr/local/bin/publish-chart.sh" ]
